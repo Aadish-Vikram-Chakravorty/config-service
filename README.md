@@ -94,7 +94,7 @@ This project was built to gain hands-on experience with:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/configly.git
+git clone https://github.com/Aadish-Vikram-Chakravorty/configly.git
 
 # Start services
 docker-compose up
