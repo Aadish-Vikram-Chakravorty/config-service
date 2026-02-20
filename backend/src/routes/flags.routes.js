@@ -19,8 +19,6 @@ router.get("/:name", (req, res) => {
   res.json({ enabled: flag.enabled });
 });
 
-module.exports = router;
-
 router.post("/", (req, res) => {
   const { name, environment, enabled } = req.body;
 
@@ -32,3 +30,6 @@ router.post("/", (req, res) => {
 
   res.status(201).json({ message: "Flag created" });
 });
+
+module.exports = router;
+
