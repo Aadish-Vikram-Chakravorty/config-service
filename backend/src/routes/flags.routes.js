@@ -1,4 +1,4 @@
-// const redisClient = require("../cache/redisClient");/
+const redisClient = require("../cache/redisClient");/
 const express = require("express");
 const router = express.Router();
 
