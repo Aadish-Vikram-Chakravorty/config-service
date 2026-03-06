@@ -1,14 +1,24 @@
+const flags = require("../flags/flagsStore");
 const redisClient = require("../cache/redisClient");
+
 const express = require("express");
 const router = express.Router();
 
-const flags = require("../flags/flagsStore");
-
 // GET /flags/:name?env=prod
-router.get("/:name", (req, res) => {
+router.get("/:name", async (req, res) => {
   const flagName = req.params.name;
   const env = req.query.env;
 
+  const cacheKey = `${flagName}:${env}`;
+
+  // 1️ Check Redis first
+  const cached = await redisClient.get(cacheKey);
+
+  if (cached !== null) {
+    return res.json({ enabled: cached === "true" });
+  }
+
+  // 2️ If not in Redis, check our store
   const flag = flags.find(
     f => f.name === flagName && f.environment === env
   );
@@ -17,6 +27,10 @@ router.get("/:name", (req, res) => {
     return res.status(404).json({ error: "Flag not found" });
   }
 
+  // 3️ Save result to Redis
+  await redisClient.set(cacheKey, flag.enabled.toString());
+
+  // 4️ Send response
   res.json({ enabled: flag.enabled });
 });
 
@@ -33,4 +47,3 @@ router.post("/", (req, res) => {
 });
 
 module.exports = router;
-
